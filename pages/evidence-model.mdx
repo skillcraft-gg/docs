@@ -1,0 +1,32 @@
+# Evidence model
+
+Skillcraft collects evidence from normal development activity so teams can show what was done, not just claimed.
+
+## What counts as evidence
+
+- Commits with clean history and clear messages.
+- Task metadata attached to your local progress flow.
+- Verifier output from checks, tests, and policy gates.
+
+## Data shape
+
+Each evidence record tracks:
+
+- `subject`: who generated the activity.
+- `skill` and `claim`: what capability was being addressed.
+- `artifact`: the commit, file set, or proof snapshot.
+- `timestamp` and `provenance`: ordering and source identity.
+
+## Validation strategy
+
+Evidence is useful only if it is:
+
+1. **Tamper-evident**: signatures and snapshots keep history trustworthy.
+2. **Repeatable**: the same source state produces the same result.
+3. **Explainable**: links back to files, checks, and owners for review.
+
+When all three are true, credentials become much harder to dispute.
+
+## Next
+
+- Move from capture to claims with [Claiming credentials](claiming-credentials).
