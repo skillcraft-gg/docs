@@ -3,7 +3,7 @@ import type { DocsThemeConfig } from 'nextra-theme-docs'
 const themeConfig: DocsThemeConfig = {
   logo: (
     <span className="docs-theme-logo-wrap">
-      <img src="/images/logo.png" alt="Skillcraft" className="docs-theme-logo" />
+      <img src="/docs/images/logo.png" alt="Skillcraft" className="docs-theme-logo" />
     </span>
   ),
   darkMode: false,
