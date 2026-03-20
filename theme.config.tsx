@@ -14,13 +14,13 @@ const themeConfig: DocsThemeConfig = {
   project: {
     link: 'https://github.com/skillcraft-gg/skillcraft',
   },
-  docsRepositoryBase: 'https://github.com/skillcraft-gg/skillcraft/tree/main',
+  docsRepositoryBase: 'https://github.com/skillcraft-gg/docs/tree/main',
   sidebar: {
     defaultMenuCollapseLevel: 2,
     toggleButton: true,
   },
   footer: {
-    text: 'Skillcraft documentation',
+    text: 'You can build anything with AI. So how do you prove it?',
   },
   head: () => {
     return (

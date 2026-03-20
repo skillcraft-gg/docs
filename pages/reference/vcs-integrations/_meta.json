@@ -1,0 +1,15 @@
+{
+  "github": "GitHub",
+  "github-enterprise-cloud": {
+    "title": "GitHub Enterprise Cloud",
+    "display": "hidden"
+  },
+  "bitbucket": {
+    "title": "Bitbucket",
+    "display": "hidden"
+  },
+  "gitlab": {
+    "title": "GitLab",
+    "display": "hidden"
+  }
+}

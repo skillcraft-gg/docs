@@ -1,0 +1,19 @@
+{
+  "opencode": "Opencode",
+  "claude-code": {
+    "title": "Claude Code",
+    "display": "hidden"
+  },
+  "gemini-cli": {
+    "title": "Gemini CLI",
+    "display": "hidden"
+  },
+  "github-copilot-cli": {
+    "title": "GitHub Copilot CLI",
+    "display": "hidden"
+  },
+  "codex-cli": {
+    "title": "Codex CLI",
+    "display": "hidden"
+  }
+}
