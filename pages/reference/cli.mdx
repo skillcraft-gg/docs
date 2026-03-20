@@ -1,0 +1,162 @@
+# CLI reference
+
+Use this as the canonical list of commands from `skillcraft --help`.
+
+```bash
+skillcraft [options] [command]
+```
+
+`skillcraft` is the top-level CLI command for repository enablement, evidence capture workflows, skills/loadout publishing, claims, and local verification.
+
+## Global flags
+
+```bash
+--json        machine-readable JSON output
+-h, --help    display help for command
+-v, --version output version number
+```
+
+`--json` is supported by commands that include structured output.
+
+## `skillcraft enable`
+
+Initialize Skillcraft in the current repository.
+
+```bash
+skillcraft enable
+```
+
+Use once per repository.
+
+## `skillcraft disable`
+
+Disable Skillcraft for the current repository and remove local integration state.
+
+```bash
+skillcraft disable
+```
+
+## `skillcraft status`
+
+Show repository status: git availability, enabled state, pending skills, hook presence, proof metadata, and recent evidence counts.
+
+```bash
+skillcraft status
+```
+
+## `skillcraft doctor`
+
+Run environment and integration readiness checks.
+
+```bash
+skillcraft doctor
+```
+
+## `skillcraft repos`
+
+Manage tracked repositories.
+
+```bash
+skillcraft repos list
+skillcraft repos prune
+```
+
+`repos list` shows tracked repository entries.
+
+`repos prune` removes unavailable repository entries from tracking.
+
+## `skillcraft progress`
+
+Show evidence progress for the current repository.
+
+```bash
+skillcraft progress
+```
+
+## `skillcraft skills`
+
+Manage local skill workflows and registry discovery.
+
+```bash
+skillcraft skills add <id>
+skillcraft skills publish <owner-slug>
+skillcraft skills validate
+skillcraft skills list
+skillcraft skills inspect <id>
+skillcraft skills search [query] [--source <source>] [--limit <n>]
+```
+
+- `skills add <id>` queues a local or external skill ID for evidence collection.
+- `skills publish <owner-slug>` publishes a local skill to the registry.
+- `skills validate` checks local skill layout.
+- `skills list` prints detected skills.
+- `skills inspect <id>` prints registry details for a skill.
+- `skills search [query]` browses the published index.
+  - `--source <source>` filters by source.
+  - `--limit <n>` caps displayed results.
+
+## `skillcraft verify`
+
+Verify local proof references and proof-object integrity.
+
+```bash
+skillcraft verify
+```
+
+## `skillcraft claim`
+
+Claim a credential or inspect claim details.
+
+```bash
+skillcraft claim <credential>
+skillcraft claim --all-repos
+skillcraft claim --repo <path...>
+skillcraft claim list
+skillcraft claim status <issue>
+```
+
+- `claim <credential>` submits a claim using the credential identifier.
+- `--all-repos` includes all tracked repositories.
+- `--repo <path...>` includes explicit repository paths.
+- `claim list` shows issues in the credentials repository.
+- `claim status <issue>` shows issue status by number.
+
+## `skillcraft loadout`
+
+Manage active loadouts for local evidence context.
+
+```bash
+skillcraft loadout use <id>
+skillcraft loadout clear
+skillcraft loadout share <id>
+```
+
+- `loadout use <owner>/<slug>` activates a loadout.
+- `loadout clear` clears active loadouts.
+- `loadout share <owner>/<slug>` publishes a local loadout.
+
+## `skillcraft _hook` (internal)
+
+Internal Git hook integration command used by automation.
+
+```bash
+skillcraft _hook <name> [repoPath] [remote]
+```
+
+This command appears in the CLI output but is primarily for internal workflows.
+
+## `skillcraft help`
+
+Built-in command reference helper.
+
+```bash
+skillcraft help [command]
+```
+
+Provides usage details for a specific command.
+
+## Related docs
+
+- [Getting started](../getting-started)
+- [Your first credential](../tutorials/first-credential)
+- [Troubleshooting](./troubleshooting)

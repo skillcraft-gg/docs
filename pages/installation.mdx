@@ -1,0 +1,54 @@
+# Installation
+
+This page documents the concrete setup flow before you start claim workflows.
+
+## 1) Prerequisites
+
+- Node.js and npm (or another Node package manager)
+- A shell with git available in PATH
+- Internet access for verification calls
+
+## 2) Install the CLI
+
+Use your preferred package manager:
+
+```bash
+npm install -g skillcraft
+```
+
+```bash
+pnpm add -g skillcraft
+```
+
+```bash
+yarn global add skillcraft
+```
+
+```bash
+bun add -g skillcraft
+```
+
+## 3) Verify the install
+
+```bash
+skillcraft --version
+```
+
+If the command is not found, restart your shell and confirm your global bin directory is in `PATH`.
+
+## 4) Prepare a repository
+
+Initialize Skillcraft once per repository:
+
+```bash
+cd your-project
+skillcraft enable
+```
+
+`enable` should create local metadata used by progress and claim commands.
+
+## 5) Quick next step
+
+- [Getting started walkthrough](getting-started)
+- [First credential tutorial](tutorials/first-credential)
+- [Troubleshooting](reference/troubleshooting)

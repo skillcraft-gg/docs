@@ -15,12 +15,12 @@ export default function DocsLanding() {
             claim credentials, and publish meaningful AI-backed proof.
           </p>
 
-          <div className="docs-cta-row">
+        <div className="docs-cta-row">
             <Link href="getting-started" className="docs-btn docs-btn-primary">
               Get started
             </Link>
-            <Link href="https://github.com/skillcraft-gg/skillcraft" className="docs-btn docs-btn-secondary" target="_blank" rel="noreferrer">
-              Source repo
+            <Link href="tutorials/first-credential" className="docs-btn docs-btn-secondary">
+              First credential tutorial
             </Link>
           </div>
         </div>
@@ -37,7 +37,7 @@ export default function DocsLanding() {
             <p className="docs-panel-kicker">Claiming</p>
             <h2 className="docs-panel-title">Credentials</h2>
             <p className="docs-panel-copy">
-              Learn how to package proofs and issue claims that can be shared across teams and roles.
+              Learn how to package proofs and issue your first shareable claim.
             </p>
           </section>
         </aside>

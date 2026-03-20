@@ -1,30 +1,54 @@
 # Getting started
 
-Welcome to Skillcraft docs.
+Welcome to Skillcraft. This guide gets you from CLI install to a working repository setup in a few minutes.
 
-## Install the CLI
+## 1. Install the CLI
 
 ```bash
 npm install -g skillcraft
 ```
 
-## Initialize a repo
+If you use a different Node package manager, see [Installation](installation).
+
+## 2. Add Skillcraft to a project
+
+From a git repository you want to track:
 
 ```bash
 cd your-project
 skillcraft enable
 ```
 
-## Track usage
+You only need to run this once per repository.
 
-Create commits with meaningful messages and your skill evidence will be captured. When proofs are ready, run:
+## 3. Run work in the repo
+
+Make a normal development commit while you work:
+
+```bash
+touch .skillcraft-guide.md
+git add .skillcraft-guide.md
+git commit -m "chore: trigger skillcraft evidence"
+```
+
+Skillcraft records this activity for evidence capture.
+
+## 4. Verify progress
 
 ```bash
 skillcraft progress
-skillcraft claim skillcraft-gg/your-credential
 ```
 
-## Next
+That command shows captured evidence for the current repo and what is available to claim.
 
-- Start with [Evidence model](evidence-model)
-- Read [Credential claims](claiming-credentials)
+## 5. Move to your first guided walkthrough
+
+Next, complete the end-to-end flow and claim a real credential:
+
+- [Your first credential](tutorials/first-credential)
+
+## Continue learning
+
+- [Evidence model](evidence-model)
+- [Claiming credentials](claiming-credentials)
+- [CLI reference](reference/cli)

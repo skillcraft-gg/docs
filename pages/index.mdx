@@ -1,33 +1,12 @@
-import DocsLanding from '../components/docs-landing'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 
-<DocsLanding />
+export default function Home() {
+  const router = useRouter()
 
-## Explore the docs
+  useEffect(() => {
+    router.replace('/getting-started')
+  }, [router])
 
-- [Getting started](getting-started)
-- [Evidence model](evidence-model)
-- [Claiming credentials](claiming-credentials)
-
-## What this site covers
-
-- How evidence is captured from commits
-- How skills are structured and versioned
-- How credentials are issued and verified
-
-<section className="docs-landing-panels">
-  <section className="docs-panel docs-feature-card">
-    <p className="docs-panel-kicker">For contributors</p>
-    <h2 className="docs-panel-title">Contribute skill definitions</h2>
-    <div className="docs-panel-copy">
-      Add a new skill, wire required checkers, and publish updates through PR workflow.
-    </div>
-  </section>
-
-  <section className="docs-panel docs-feature-card">
-    <p className="docs-panel-kicker">For operators</p>
-    <h2 className="docs-panel-title">Run verification</h2>
-    <div className="docs-panel-copy">
-      Turn repo history into deterministic checks and auditable proof artifacts.
-    </div>
-  </section>
-</section>
+  return null
+}

@@ -1,0 +1,11 @@
+{
+  "index": {
+    "title": "Home",
+    "type": "page",
+    "display": "hidden"
+  },
+  "getting-started": "Getting Started",
+  "installation": "Installation",
+  "tutorials": "Tutorials",
+  "reference": "Reference"
+}
