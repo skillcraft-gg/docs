@@ -6,9 +6,28 @@ Supported.
 
 ## Current support
 
-Opencode is supported as an AI coding agent workflow for evidence-friendly workflows.
+Opencode is supported as an evidence-aware coding agent.
+
+## Enable flow
+
+When you run `skillcraft enable`, Skillcraft writes a managed plugin at:
+
+`.opencode/plugins/skillcraft.mjs`
+
+The plugin captures runtime model provenance from Opencode chat messages and persists it to:
+
+`.git/skillcraft/ai-model-context.json`
+
+## Captured provenance fields
+
+- `agent.provider`
+- `model.provider`
+- `model.name`
+
+These values are merged into each generated proof.
 
 ## Notes
 
-- Keep normal git history events visible to Skillcraft.
-- Run your standard `skillcraft enable`, commit, and claim flow.
+- Keep normal git history visible to Skillcraft.
+- Run standard `skillcraft enable`, commit, and claim flow.
+- Run `skillcraft disable` to remove the generated plugin and provenance state file.

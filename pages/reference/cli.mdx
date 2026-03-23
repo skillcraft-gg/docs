@@ -67,7 +67,7 @@ skillcraft repos prune
 
 ## `skillcraft progress`
 
-Show evidence progress for the current repository.
+Show evidence progress across tracked repositories.
 
 ```bash
 skillcraft progress
@@ -134,16 +134,6 @@ skillcraft loadout share <id>
 - `loadout use <owner>/<slug>` activates a loadout.
 - `loadout clear` clears active loadouts.
 - `loadout share <owner>/<slug>` publishes a local loadout.
-
-## `skillcraft _hook` (internal)
-
-Internal Git hook integration command used by automation.
-
-```bash
-skillcraft _hook <name> [repoPath] [remote]
-```
-
-This command appears in the CLI output but is primarily for internal workflows.
 
 ## `skillcraft help`
 
