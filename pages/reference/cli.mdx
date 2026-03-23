@@ -67,11 +67,29 @@ skillcraft repos prune
 
 ## `skillcraft progress`
 
-Show evidence progress across tracked repositories.
+Show credential readiness across tracked repositories.
 
 ```bash
 skillcraft progress
 ```
+
+```bash
+skillcraft progress --refresh
+```
+
+`--json` is supported and outputs machine-readable status for tracked credentials.
+
+```bash
+skillcraft progress track <credential-id>
+skillcraft progress untrack <credential-id>
+```
+
+- `skillcraft progress` evaluates all locally tracked credentials and prints eligible/blocked state per credential.
+- `skillcraft progress --refresh` refreshes the credential index cache before evaluation.
+- `skillcraft progress track <credential-id>` begins tracking a credential for progress checks.
+- `skillcraft progress untrack <credential-id>` stops tracking a credential.
+
+The credential index is cached locally as a timestamped snapshot and automatically refreshed about every 6 hours. Use `--refresh` if you want to force an immediate re-download.
 
 ## `skillcraft skills`
 

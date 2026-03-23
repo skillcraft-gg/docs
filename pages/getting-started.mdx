@@ -33,13 +33,21 @@ git commit -m "chore: trigger skillcraft evidence"
 
 Skillcraft records this activity for evidence capture.
 
-## 4. Verify progress
+## 4. Track and verify progress
+
+First, track the credential you want to monitor:
+
+```bash
+skillcraft progress track skillcraft-gg/hello-world
+```
+
+Then check progress:
 
 ```bash
 skillcraft progress
 ```
 
-That command shows captured evidence and what is available to claim across all tracked repositories.
+That command shows captured evidence against your tracked credentials and whether each is eligible.
 
 ## 5. Move to your first guided walkthrough
 
