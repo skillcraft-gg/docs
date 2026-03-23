@@ -30,12 +30,11 @@ const themeConfig: DocsThemeConfig = {
   },
   useNextSeoProps() {
     return {
-      title: docsMetaTitle,
+      titleTemplate: `%s | ${docsMetaTitle}`,
       description: docsMetaDescription,
       openGraph: {
         type: 'website',
         siteName: 'Skillcraft',
-        title: docsMetaTitle,
         description: docsMetaDescription,
         images: [
           {
@@ -51,15 +50,14 @@ const themeConfig: DocsThemeConfig = {
   head: () => {
     return (
       <>
-        <meta name="theme-color" content="#07050d" />
-        <link rel="icon" href={docsFavicon} />
-        <link rel="shortcut icon" href={docsFavicon} />
-        <link rel="apple-touch-icon" href={docsFavicon} />
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:title" content={docsMetaTitle} />
-        <meta property="twitter:description" content={docsMetaDescription} />
-        <meta name="twitter:image" content={docsOgImage} />
-        <meta name="twitter:image:alt" content="Skillcraft landing preview" />
+      <meta name="theme-color" content="#07050d" />
+      <link rel="icon" href={docsFavicon} />
+      <link rel="shortcut icon" href={docsFavicon} />
+      <link rel="apple-touch-icon" href={docsFavicon} />
+      <meta property="twitter:card" content="summary_large_image" />
+      <meta property="twitter:description" content={docsMetaDescription} />
+      <meta name="twitter:image" content={docsOgImage} />
+      <meta name="twitter:image:alt" content="Skillcraft landing preview" />
       </>
     )
   },
