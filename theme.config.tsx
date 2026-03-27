@@ -12,6 +12,7 @@ const themeConfig: DocsThemeConfig = {
       <img src="/docs/images/logo.png" alt="Skillcraft" className="docs-theme-logo" />
     </span>
   ),
+  logoLink: 'https://skillcraft.gg',
   darkMode: false,
   nextThemes: {
     defaultTheme: 'dark',
