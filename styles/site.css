@@ -358,6 +358,53 @@ code {
   font-size: 12px;
 }
 
+.docs-changelog-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.docs-changelog-meta,
+.docs-changelog-warning,
+.docs-changelog-empty {
+  color: var(--muted-2);
+  line-height: 1.6;
+}
+
+.docs-changelog-warning {
+  color: var(--yellow-2);
+}
+
+.docs-changelog-refresh {
+  height: 46px;
+  padding-inline: 20px;
+}
+
+.docs-changelog-repo {
+  margin-top: 36px;
+}
+
+.docs-changelog-day {
+  margin-top: 18px;
+}
+
+.docs-changelog-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.docs-changelog-list li {
+  margin: 10px 0;
+  color: var(--muted);
+}
+
+.docs-changelog-hash {
+  font-family: var(--font-display);
+  color: var(--yellow);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

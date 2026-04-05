@@ -5,7 +5,10 @@
     "display": "hidden"
   },
   "getting-started": "Getting Started",
+  "skillcraft-beta": "Skillcraft Beta",
   "installation": "Installation",
   "tutorials": "Tutorials",
-  "reference": "Reference"
+  "reference": "Reference",
+  "changelog": "Changelog",
+  "roadmap": "Roadmap"
 }

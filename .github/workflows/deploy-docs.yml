@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -33,8 +35,9 @@ jobs:
       - name: Prepare publish artifact
         run: |
           rm -rf publish
-          mkdir -p publish
+          mkdir -p publish/meta
           cp -R out/* publish/
+          cp meta/changelog.json publish/meta/changelog.json
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

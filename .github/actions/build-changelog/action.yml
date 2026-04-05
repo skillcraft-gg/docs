@@ -1,0 +1,9 @@
+name: Build changelog JSON
+description: Generate meta/changelog.json from main branch commit history
+
+runs:
+  using: composite
+  steps:
+    - name: Generate changelog JSON
+      shell: bash
+      run: node "$GITHUB_ACTION_PATH/build-changelog.mjs"

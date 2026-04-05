@@ -1,0 +1,40 @@
+# Skillcraft Beta
+
+Skillcraft Beta turns normal AI-assisted development work into verifiable evidence for credentials. Instead of asking you to describe what you can do, Skillcraft ties claims to real commits, captures workflow context, and verifies the result against explicit requirements.
+
+The goal is simple: keep your existing workflow, then make the proof behind that work inspectable and reproducible.
+
+## Current capabilities
+
+- Enable Skillcraft in a repository with `skillcraft enable`.
+- Capture evidence from normal git commits while you work.
+- Track credential readiness with `skillcraft progress` and `skillcraft progress track <credential-id>`.
+- Submit claims and check claim status with `skillcraft claim`.
+- Verify local proof references with `skillcraft verify`.
+- Use OpenCode as the currently supported AI coding agent integration.
+- Capture OpenCode model provenance in generated proof data.
+- Run the current documented beta flow in GitHub-hosted repositories.
+
+## Current limitations
+
+- Beta currently requires a GitHub account.
+- Claims must come from commits pushed to public GitHub repositories.
+- OpenCode is the only AI coding agent currently supported.
+- Other AI coding agent pages in the docs are placeholders for planned support, not active integrations.
+- GitHub is the only VCS integration currently documented as supported in beta.
+
+## Recommended beta flow
+
+1. Install the CLI and run `skillcraft enable` in a git repository.
+2. Make a normal commit while you work.
+3. Track a credential with `skillcraft progress track <credential-id>`.
+4. Check readiness with `skillcraft progress`.
+5. Submit a claim once the required evidence is available.
+
+## Related docs
+
+- [Getting Started](./getting-started)
+- [Your first credential](./tutorials/first-credential)
+- [CLI reference](./reference/cli)
+- [OpenCode integration](./reference/ai-coding-agents/opencode)
+- [GitHub integration](./reference/vcs-integrations/github)

@@ -1,0 +1,19 @@
+name: Prepare repository Pages artifact
+description: Copy the current repository into a publish directory for Pages
+
+inputs:
+  output-dir:
+    description: Output directory to populate
+    required: false
+    default: publish
+
+runs:
+  using: composite
+  steps:
+    - name: Prepare repository bundle
+      shell: bash
+      run: |
+        rm -rf "${{ inputs.output-dir }}"
+        mkdir -p "${{ inputs.output-dir }}"
+        rsync -a --exclude='.git' --exclude='publish' ./ "${{ inputs.output-dir }}/"
+        touch "${{ inputs.output-dir }}/.nojekyll"
