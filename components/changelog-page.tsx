@@ -11,6 +11,10 @@ type RepoCommit = {
   committedAt: string
 }
 
+type DisplayCommit = RepoCommit & {
+  repo: string
+}
+
 type RepoChangelog = {
   repo: string
   branch: string
@@ -21,13 +25,21 @@ type RepoChangelog = {
 type DayGroup = {
   key: string
   label: string
-  commits: RepoCommit[]
+  sections: CommitSection[]
 }
 
-type RepoGroup = {
-  repo: string
-  latestTimestamp: number
-  days: DayGroup[]
+type CommitSection = {
+  key: 'features' | 'fixes' | 'other'
+  label: string
+  commits: DisplayCommit[]
+}
+
+const SECTION_ORDER: CommitSection['key'][] = ['features', 'fixes', 'other']
+
+const SECTION_LABELS: Record<CommitSection['key'], string> = {
+  features: 'Features',
+  fixes: 'Fixes',
+  other: 'Other',
 }
 
 const CHANGELOG_URLS = [
@@ -40,9 +52,46 @@ const CHANGELOG_URLS = [
   'https://skillcraft.gg/brand-toolkit/meta/changelog.json',
 ]
 
-const CONVENTIONAL_COMMIT_PATTERN = /^[a-z]+(?:\([^)]+\))?!?:\s+/u
+const CONVENTIONAL_COMMIT_PATTERN = /^([a-z]+)(?:\([^)]+\))?!?:\s+/u
 
 const initialPayloads = Array.isArray(snapshot) ? snapshot : []
+
+const getRepoUrl = (repo: string) => `https://github.com/skillcraft-gg/${repo}`
+
+const getCommitType = (message: string) => {
+  const match = message.match(CONVENTIONAL_COMMIT_PATTERN)
+  return match?.[1]?.toLowerCase() || ''
+}
+
+const getCommitSectionKey = (message: string): CommitSection['key'] | null => {
+  const type = getCommitType(message)
+
+  if (!type || type === 'chore') {
+    return null
+  }
+
+  if (type === 'feat') {
+    return 'features'
+  }
+
+  if (type === 'fix') {
+    return 'fixes'
+  }
+
+  return 'other'
+}
+
+const getDisplayMessage = (message: string) => {
+  const stripped = message.replace(CONVENTIONAL_COMMIT_PATTERN, '').trim()
+  const base = stripped || message
+  const capitalized = base ? `${base[0].toUpperCase()}${base.slice(1)}` : base
+
+  if (!capitalized) {
+    return capitalized
+  }
+
+  return /[.!?]$/u.test(capitalized) ? capitalized : `${capitalized}.`
+}
 
 const parseTimestamp = (value: string) => {
   const parsed = Date.parse(value || '')
@@ -112,55 +161,57 @@ const toLocalDayLabel = (date: Date) =>
     day: 'numeric',
   })
 
-const buildRepoGroups = (payloads: unknown[]): RepoGroup[] => {
-  const repos = new Map<string, RepoCommit[]>()
+const buildDayGroups = (payloads: unknown[]): DayGroup[] => {
+  const days = new Map<string, { label: string; sections: Map<CommitSection['key'], DisplayCommit[]> }>()
 
   for (const payload of payloads.map(normalizePayload).filter((item): item is RepoChangelog => Boolean(item))) {
-    const matchingCommits = payload.commits.filter((commit) => CONVENTIONAL_COMMIT_PATTERN.test(commit.message))
-    if (!repos.has(payload.repo)) {
-      repos.set(payload.repo, [])
-    }
+    const matchingCommits = payload.commits.filter((commit) => getCommitSectionKey(commit.message) !== null)
 
-    repos.get(payload.repo)?.push(...matchingCommits)
+    for (const commit of matchingCommits) {
+      const commitDate = new Date(commit.committedAt)
+      const dayKey = toLocalDayKey(commitDate)
+      const sectionKey = getCommitSectionKey(commit.message)
+
+      if (!sectionKey) {
+        continue
+      }
+
+      const existingDay = days.get(dayKey) || {
+        label: toLocalDayLabel(commitDate),
+        sections: new Map<CommitSection['key'], DisplayCommit[]>(),
+      }
+
+      if (!existingDay.sections.has(sectionKey)) {
+        existingDay.sections.set(sectionKey, [])
+      }
+
+      existingDay.sections.get(sectionKey)?.push({
+        ...commit,
+        repo: payload.repo,
+      })
+      days.set(dayKey, existingDay)
+    }
   }
 
-  return Array.from(repos.entries())
-    .map(([repo, commits]) => {
-      const sortedCommits = [...commits].sort((left, right) => parseTimestamp(right.committedAt) - parseTimestamp(left.committedAt))
-      const dayGroups = new Map<string, DayGroup>()
-
-      for (const commit of sortedCommits) {
-        const commitDate = new Date(commit.committedAt)
-        const key = toLocalDayKey(commitDate)
-        const existing = dayGroups.get(key)
-
-        if (existing) {
-          existing.commits.push(commit)
-          continue
-        }
-
-        dayGroups.set(key, {
-          key,
-          label: toLocalDayLabel(commitDate),
-          commits: [commit],
-        })
-      }
-
-      const days = Array.from(dayGroups.values())
-        .map((group) => ({
-          ...group,
-          commits: [...group.commits].sort((left, right) => parseTimestamp(right.committedAt) - parseTimestamp(left.committedAt)),
+  return Array.from(days.entries())
+    .map(([key, day]) => ({
+      key,
+      label: day.label,
+      sections: SECTION_ORDER
+        .map((sectionKey) => ({
+          key: sectionKey,
+          label: SECTION_LABELS[sectionKey],
+          commits: [...(day.sections.get(sectionKey) || [])].sort(
+            (left, right) =>
+              parseTimestamp(right.committedAt) - parseTimestamp(left.committedAt)
+              || left.repo.localeCompare(right.repo)
+              || left.sha.localeCompare(right.sha),
+          ),
         }))
-        .sort((left, right) => right.key.localeCompare(left.key))
-
-      return {
-        repo,
-        latestTimestamp: sortedCommits.length ? parseTimestamp(sortedCommits[0].committedAt) : 0,
-        days,
-      }
-    })
-    .filter((group) => group.days.length > 0)
-    .sort((left, right) => right.latestTimestamp - left.latestTimestamp)
+        .filter((section) => section.commits.length > 0),
+    }))
+    .filter((group) => group.sections.length > 0)
+    .sort((left, right) => right.key.localeCompare(left.key))
 }
 
 const loadLivePayloads = async () => {
@@ -182,12 +233,15 @@ const loadLivePayloads = async () => {
 }
 
 export default function ChangelogPage() {
+  const [hasMounted, setHasMounted] = useState(false)
   const [payloads, setPayloads] = useState<unknown[]>(initialPayloads)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [refreshError, setRefreshError] = useState<string | null>(null)
   const [refreshedAt, setRefreshedAt] = useState<string | null>(null)
 
   useEffect(() => {
+    setHasMounted(true)
+
     const refresh = async () => {
       setIsRefreshing(true)
       setRefreshError(null)
@@ -200,10 +254,7 @@ export default function ChangelogPage() {
             setPayloads(nextPayloads)
           })
           setRefreshedAt(new Date().toISOString())
-          return
         }
-
-        setRefreshError('No live changelog sources responded.')
       } catch {
         setRefreshError('Live changelog refresh failed. Showing the latest bundled snapshot instead.')
       } finally {
@@ -214,14 +265,14 @@ export default function ChangelogPage() {
     void refresh()
   }, [])
 
-  const repoGroups = buildRepoGroups(payloads)
+  const dayGroups = hasMounted ? buildDayGroups(payloads) : []
 
   return (
     <div className="docs-changelog">
       <div className="docs-changelog-toolbar">
-        <p className="docs-changelog-meta">
-          Rendered from `main` branch commits that follow conventional prefixes like `feat:`, `fix:`, `chore:`, and `docs:`.
-        </p>
+        {refreshedAt ? (
+          <p className="docs-changelog-meta">Last refreshed: {new Date(refreshedAt).toLocaleString()}</p>
+        ) : null}
         <button
           type="button"
           className="docs-btn docs-btn-secondary docs-changelog-refresh"
@@ -236,8 +287,6 @@ export default function ChangelogPage() {
                   setPayloads(nextPayloads)
                 })
                 setRefreshedAt(new Date().toISOString())
-              } else {
-                setRefreshError('No live changelog sources responded.')
               }
             } catch {
               setRefreshError('Live changelog refresh failed. Showing the latest bundled snapshot instead.')
@@ -251,26 +300,26 @@ export default function ChangelogPage() {
         </button>
       </div>
 
-      {refreshedAt ? (
-        <p className="docs-changelog-meta">Last refreshed: {new Date(refreshedAt).toLocaleString()}</p>
-      ) : null}
-
       {refreshError ? <p className="docs-changelog-warning">{refreshError}</p> : null}
 
-      {repoGroups.length === 0 ? (
+      {!hasMounted ? (
+        <p className="docs-changelog-meta">Loading changelog...</p>
+      ) : null}
+
+      {hasMounted && dayGroups.length === 0 ? (
         <p className="docs-changelog-empty">No changelog entries are available yet.</p>
       ) : null}
 
-      {repoGroups.map((repoGroup) => (
-        <section key={repoGroup.repo} className="docs-changelog-repo">
-          <h2>{repoGroup.repo}</h2>
-          {repoGroup.days.map((dayGroup) => (
-            <div key={`${repoGroup.repo}-${dayGroup.key}`} className="docs-changelog-day">
-              <h3>{dayGroup.label}</h3>
+      {hasMounted && dayGroups.map((dayGroup) => (
+        <section key={dayGroup.key} className="docs-changelog-day">
+          <h1>{dayGroup.label}</h1>
+          {dayGroup.sections.map((section) => (
+            <div key={`${dayGroup.key}-${section.key}`} className="docs-changelog-section">
+              <h3>{section.label}</h3>
               <ul className="docs-changelog-list">
-                {dayGroup.commits.map((commit) => (
-                  <li key={commit.sha}>
-                    {commit.message} (
+                {section.commits.map((commit) => (
+                  <li key={`${commit.repo}-${commit.sha}`}>
+                    {getDisplayMessage(commit.message)} (
                     <a
                       className="docs-changelog-hash"
                       href={commit.url}
@@ -278,6 +327,15 @@ export default function ChangelogPage() {
                       rel="noreferrer"
                     >
                       {commit.sha.slice(0, 7)}
+                    </a>{' '}
+                    in{' '}
+                    <a
+                      className="docs-changelog-repo-link"
+                      href={getRepoUrl(commit.repo)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {commit.repo}
                     </a>
                     )
                   </li>

@@ -361,9 +361,18 @@ code {
 .docs-changelog-toolbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 16px;
   flex-wrap: wrap;
+  width: 100%;
+}
+
+.docs-changelog-toolbar .docs-changelog-meta {
+  margin: 0;
+}
+
+.docs-changelog-toolbar .docs-changelog-refresh {
+  margin-left: auto;
 }
 
 .docs-changelog-meta,
@@ -382,22 +391,56 @@ code {
   padding-inline: 20px;
 }
 
+.docs-changelog-day > h1 {
+  margin: 32px 0 0;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
 .docs-changelog-repo {
-  margin-top: 36px;
+  margin-top: 24px;
+}
+
+.docs-changelog-repo > h2 {
+  margin: 0 0 10px;
+  font-size: clamp(20px, 2.4vw, 28px);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.docs-changelog-repo-link {
+  color: var(--yellow);
+  text-decoration: none;
+}
+
+.docs-changelog-section {
+  margin-top: 22px;
+}
+
+.docs-changelog-section > h3 {
+  margin: 0 0 10px;
+  color: var(--muted-2);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .docs-changelog-day {
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 .docs-changelog-list {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 22px;
+  list-style: disc;
 }
 
 .docs-changelog-list li {
-  margin: 10px 0;
+  margin: 8px 0;
   color: var(--muted);
+  line-height: 1.6;
 }
 
 .docs-changelog-hash {
