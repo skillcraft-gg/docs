@@ -21,39 +21,40 @@ skillcraft enable
 
 You only need to run this once per repository.
 
-## 3. Run work in the repo
+## 3. Work towards a credential
 
-Make a normal development commit while you work:
-
-```bash
-touch .skillcraft-guide.md
-git add .skillcraft-guide.md
-git commit -m "chore: trigger skillcraft evidence"
-```
-
-Skillcraft records this activity for evidence capture.
-
-## 4. Track and verify progress
-
-First, track the credential you want to monitor:
+See the [Hello World credential page](https://skillcraft.gg/credentials/skillcraft-gg/hello-world/) for more details about this credential.
 
 ```bash
 skillcraft progress track skillcraft-gg/hello-world
 ```
 
-Then check progress:
+Then run your work through your AI coding agent so Skillcraft can capture the necessary evidence. [OpenCode](reference/ai-coding-agents/opencode) is currently supported. For more about current beta capabilities and limitations, see [Skillcraft Beta](skillcraft-beta).
+
+See [Your first credential](tutorials/first-credential) for the full guided walkthrough including evidence capture and progress checks.
+
+## 4. Claim a credential
 
 ```bash
-skillcraft progress
+skillcraft claim skillcraft-gg/hello-world
 ```
 
-That command shows captured evidence against your tracked credentials and whether each is eligible.
+You can track the status of your claim with:
 
-## 5. Move to your first guided walkthrough
+```bash
+skillcraft claim status skillcraft-gg/hello-world
+```
 
-Next, complete the end-to-end flow and claim a real credential:
+Once your claim is verified, your profile will be added to the issued list for this credential:
 
-- [Your first credential](tutorials/first-credential)
+- [Issued credentials for Hello World](https://skillcraft.gg/credentials/skillcraft-gg/hello-world/issued/)
+
+Your credential will also appear on your profile and be issued at its own URL, for example:
+
+- [Example credential profile](https://skillcraft.gg/credentials/profiles/github/blairhudson/)
+- [Example issued credential page](https://skillcraft.gg/credentials/profiles/github/blairhudson/skillcraft-gg/hello-world/)
+
+From there you can [verify it](https://skillcraft.gg/credentials/profiles/github/blairhudson/skillcraft-gg/hello-world/?verify) and [share it on LinkedIn](https://skillcraft.gg/credentials/profiles/github/blairhudson/skillcraft-gg/hello-world/?share).
 
 ## Continue learning
 
