@@ -4,7 +4,7 @@ import ChangelogTocExtra from './components/changelog-toc-extra'
 
 const docsMetaTitle = 'Skillcraft: Turn your work into verifiable AI credentials'
 const docsMetaDescription =
-  'Capture what you build, share your progress, and earn verifiable credentials that prove measurable real-world AI engineering work.'
+  'Capture what you build, share your progress, and earn verifiable credentials that prove your AI coding skills.'
 const docsOgImage = 'https://skillcraft.gg/images/og-home.jpg'
 const docsFavicon = 'https://skillcraft.gg/favicon.ico'
 const docsAppleTouchIcon = 'https://skillcraft.gg/images/skillcraft-stripes.png'
