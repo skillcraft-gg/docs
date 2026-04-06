@@ -4,7 +4,8 @@ const docsMetaTitle = 'Skillcraft: Turn your work into verifiable AI credentials
 const docsMetaDescription =
   'Capture what you build, share your progress, and earn verifiable credentials that prove measurable real-world AI engineering work.'
 const docsOgImage = 'https://skillcraft.gg/images/og-home.jpg'
-const docsFavicon = 'https://skillcraft.gg/images/skillcraft-icon-zoom.png'
+const docsFavicon = 'https://skillcraft.gg/favicon.ico'
+const docsAppleTouchIcon = 'https://skillcraft.gg/images/skillcraft-stripes.png'
 
 const themeConfig: DocsThemeConfig = {
   logo: (
@@ -50,14 +51,14 @@ const themeConfig: DocsThemeConfig = {
   },
   head: () => {
     return (
-      <>
-      <meta name="theme-color" content="#07050d" />
-      <link rel="icon" href={docsFavicon} />
-      <link rel="shortcut icon" href={docsFavicon} />
-      <link rel="apple-touch-icon" href={docsFavicon} />
-      <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:description" content={docsMetaDescription} />
-      <meta name="twitter:image" content={docsOgImage} />
+       <>
+       <meta name="theme-color" content="#07050d" />
+       <link rel="icon" href={docsFavicon} />
+       <link rel="shortcut icon" href={docsFavicon} />
+       <link rel="apple-touch-icon" href={docsAppleTouchIcon} />
+       <meta property="twitter:card" content="summary_large_image" />
+       <meta property="twitter:description" content={docsMetaDescription} />
+       <meta name="twitter:image" content={docsOgImage} />
       <meta name="twitter:image:alt" content="Skillcraft landing preview" />
       </>
     )
