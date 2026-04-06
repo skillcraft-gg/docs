@@ -10,6 +10,7 @@ type RepoCommit = {
   url: string
   committedAt: string
   tags: string[]
+  unreleased: boolean
 }
 
 type DisplayCommit = RepoCommit & {
@@ -169,6 +170,26 @@ const dedupeReleaseCommits = (commits: DisplayCommit[], dayKey: string) => {
   return Array.from(deduped.values())
 }
 
+const markUnreleasedCommits = (repo: string, commits: RepoCommit[]) => {
+  if (repo !== 'skillcraft') {
+    return commits.map((commit) => ({ ...commit, unreleased: false }))
+  }
+
+  let seenRelease = false
+  return commits.map((commit) => {
+    const isRelease = !!getPrimaryReleaseTag(commit)
+    const unreleased = !seenRelease && !isRelease
+    if (isRelease) {
+      seenRelease = true
+    }
+
+    return {
+      ...commit,
+      unreleased,
+    }
+  })
+}
+
 const normalizeCommit = (value: unknown): RepoCommit | null => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     return null
@@ -195,6 +216,7 @@ const normalizeCommit = (value: unknown): RepoCommit | null => {
     url,
     committedAt,
     tags,
+    unreleased: false,
   }
 }
 
@@ -207,9 +229,10 @@ const normalizePayload = (value: unknown): RepoChangelog | null => {
   const repo = String(entry.repo || '').trim()
   const branch = String(entry.branch || '').trim()
   const generatedAt = String(entry.generatedAt || '').trim()
-  const commits = Array.isArray(entry.commits)
+  const rawCommits = Array.isArray(entry.commits)
     ? entry.commits.map(normalizeCommit).filter((item): item is RepoCommit => Boolean(item))
     : []
+  const commits = markUnreleasedCommits(repo, rawCommits)
 
   if (!repo || branch !== 'main') {
     return null
@@ -351,9 +374,15 @@ export default function ChangelogPage() {
   return (
     <div className="docs-changelog">
       <div className="docs-changelog-toolbar">
-        {refreshedAt ? (
-          <p className="docs-changelog-meta">Last refreshed: {new Date(refreshedAt).toLocaleString()}</p>
-        ) : null}
+        <div className="docs-changelog-toolbar-copy">
+          {refreshedAt ? (
+            <p className="docs-changelog-meta">Last refreshed: {new Date(refreshedAt).toLocaleString()}</p>
+          ) : null}
+          <p className="docs-changelog-meta docs-changelog-note">
+            <span className="docs-changelog-unreleased">*</span>
+            {' '}indicates changes not yet released.
+          </p>
+        </div>
         <button
           type="button"
           className="docs-btn docs-btn-secondary docs-changelog-refresh"
@@ -459,6 +488,7 @@ export default function ChangelogPage() {
                           {commit.repo}
                         </a>
                         )
+                        {commit.unreleased ? <span className="docs-changelog-unreleased">*</span> : null}
                       </>
                     )}
                   </li>

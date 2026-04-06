@@ -367,6 +367,12 @@ code {
   width: 100%;
 }
 
+.docs-changelog-toolbar-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .docs-changelog-toolbar .docs-changelog-meta {
   margin: 0;
 }
@@ -384,6 +390,10 @@ code {
 
 .docs-changelog-warning {
   color: var(--yellow-2);
+}
+
+.docs-changelog-note {
+  font-size: 0.95em;
 }
 
 .docs-changelog-refresh {
@@ -446,6 +456,12 @@ code {
 .docs-changelog-hash {
   font-family: var(--font-display);
   color: var(--yellow);
+}
+
+.docs-changelog-unreleased {
+  margin-left: 4px;
+  color: var(--yellow);
+  font-weight: 700;
 }
 
 .docs-changelog-release {
