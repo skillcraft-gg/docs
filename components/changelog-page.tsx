@@ -57,6 +57,7 @@ const CHANGELOG_URLS = [
 
 const CONVENTIONAL_COMMIT_PATTERN = /^([a-z]+)(?:\([^)]+\))?!?:\s+/u
 const RELEASE_TAG_PATTERN = /^v(\d+)\.(\d+)\.(\d+)$/
+const RELEASE_MESSAGE_PATTERN = /^chore(?:\([^)]+\))?:\s+release\s+v\d+\.\d+\.\d+$/u
 
 const initialPayloads = Array.isArray(snapshot) ? snapshot : []
 
@@ -69,15 +70,17 @@ const getCommitType = (message: string) => {
   return match?.[1]?.toLowerCase() || ''
 }
 
+const isReleaseCommit = (commit: RepoCommit) => !!getPrimaryReleaseTag(commit) || RELEASE_MESSAGE_PATTERN.test(commit.message)
+
 const getCommitSectionKey = (commit: RepoCommit): CommitSection['key'] | null => {
-  if (commit.tags.length > 0) {
+  if (isReleaseCommit(commit)) {
     return 'releases'
   }
 
   const message = commit.message
   const type = getCommitType(message)
 
-  if (!type || type === 'chore') {
+  if (!type) {
     return null
   }
 
