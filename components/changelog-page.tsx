@@ -9,6 +9,7 @@ type RepoCommit = {
   message: string
   url: string
   committedAt: string
+  tags: string[]
 }
 
 type DisplayCommit = RepoCommit & {
@@ -57,6 +58,7 @@ const CONVENTIONAL_COMMIT_PATTERN = /^([a-z]+)(?:\([^)]+\))?!?:\s+/u
 const initialPayloads = Array.isArray(snapshot) ? snapshot : []
 
 const getRepoUrl = (repo: string) => `https://github.com/skillcraft-gg/${repo}`
+const getTagUrl = (repo: string, tag: string) => `${getRepoUrl(repo)}/tree/${tag}`
 
 const getCommitType = (message: string) => {
   const match = message.match(CONVENTIONAL_COMMIT_PATTERN)
@@ -108,6 +110,11 @@ const normalizeCommit = (value: unknown): RepoCommit | null => {
   const message = String(entry.message || '').trim()
   const url = String(entry.url || '').trim()
   const committedAt = String(entry.committedAt || '').trim()
+  const tags = Array.isArray(entry.tags)
+    ? entry.tags
+      .map((value) => String(value || '').trim())
+      .filter(Boolean)
+    : []
 
   if (!sha || !message || !url || !committedAt) {
     return null
@@ -118,6 +125,7 @@ const normalizeCommit = (value: unknown): RepoCommit | null => {
     message,
     url,
     committedAt,
+    tags,
   }
 }
 
@@ -337,6 +345,25 @@ export default function ChangelogPage() {
                     >
                       {commit.repo}
                     </a>
+                    {commit.tags.length > 0 ? (
+                      <span className="docs-changelog-tags">
+                        {' '}
+                        tagged{' '}
+                        {commit.tags.map((tag, index) => (
+                          <span key={`${commit.repo}-${commit.sha}-${tag}`}>
+                            {index > 0 ? ', ' : null}
+                            <a
+                              className="docs-changelog-tag"
+                              href={getTagUrl(commit.repo, tag)}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {tag}
+                            </a>
+                          </span>
+                        ))}
+                      </span>
+                    ) : null}
                     )
                   </li>
                 ))}

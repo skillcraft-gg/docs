@@ -9,6 +9,7 @@ const branch = process.env.SKILLCRAFT_CHANGELOG_BRANCH || 'main'
 const repo = repository.split('/').pop() || path.basename(process.cwd())
 const outputPath = process.env.SKILLCRAFT_CHANGELOG_OUTPUT || path.join('meta', 'changelog.json')
 const format = '%H%x1f%s%x1f%cI%x1e'
+const releaseTagPattern = /^v\d+\.\d+\.\d+$/
 
 const raw = execFileSync('git', ['log', branch, `--format=${format}`], { encoding: 'utf8' })
 
@@ -24,6 +25,7 @@ const commits = raw
       message,
       url: `https://github.com/${repository}/commit/${sha}`,
       committedAt,
+      tags: getReleaseTagsForCommit(sha),
     }
   })
   .filter((entry) => entry.sha && entry.message && entry.committedAt)
@@ -42,3 +44,16 @@ writeFileSync(
     2,
   ) + '\n',
 )
+
+function getReleaseTagsForCommit(sha) {
+  if (!sha) {
+    return []
+  }
+
+  const rawTags = execFileSync('git', ['tag', '--points-at', sha], { encoding: 'utf8' })
+  return rawTags
+    .split(/\r?\n/)
+    .map((value) => value.trim())
+    .filter((value) => releaseTagPattern.test(value))
+    .sort((left, right) => left.localeCompare(right, undefined, { numeric: true }))
+}
