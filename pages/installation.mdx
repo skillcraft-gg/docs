@@ -2,13 +2,21 @@
 
 This page documents the concrete setup flow before you start claim workflows.
 
-## 1) Prerequisites
+## 1. Prerequisites
 
-- Node.js and npm (or another Node package manager)
-- A shell with git available in PATH
-- Internet access for verification calls
+The following needs to be available in `PATH`:
 
-## 2) Install the CLI
+- `node`, `npm` Node.js and npm ([Download](https://nodejs.org/))
+- `git` Git ([Download](https://git-scm.com/downloads))
+- `gh` GitHub CLI ([Download](https://cli.github.com/)) and authenticated with `gh auth login`
+- `opencode` OpenCode ([Download](https://opencode.ai/))
+
+You will also need:
+
+- a [GitHub](https://github.com/) account
+- Internet access
+
+## 2. Install the CLI
 
 Use your preferred package manager:
 
@@ -28,7 +36,7 @@ yarn global add skillcraft
 bun add -g skillcraft
 ```
 
-## 3) Verify the install
+## 3. Verify the install
 
 ```bash
 skillcraft --version
@@ -36,18 +44,7 @@ skillcraft --version
 
 If the command is not found, restart your shell and confirm your global bin directory is in `PATH`.
 
-## 4) Prepare a repository
-
-Initialize Skillcraft once per repository:
-
-```bash
-cd your-project
-skillcraft enable
-```
-
-`enable` should create local metadata used by progress and claim commands.
-
-## 5) Quick next step
+## 4. Quick next step
 
 - [Getting started walkthrough](getting-started)
 - [First credential tutorial](tutorials/first-credential)

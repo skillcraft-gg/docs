@@ -4,9 +4,9 @@
     "type": "page",
     "display": "hidden"
   },
-  "getting-started": "Getting Started",
   "skillcraft-beta": "Skillcraft Beta",
   "installation": "Installation",
+  "getting-started": "Getting Started",
   "tutorials": "Tutorials",
   "reference": "Reference",
   "changelog": "Changelog",
