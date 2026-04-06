@@ -1,5 +1,7 @@
 import type { DocsThemeConfig } from 'nextra-theme-docs'
 
+import ChangelogTocExtra from './components/changelog-toc-extra'
+
 const docsMetaTitle = 'Skillcraft: Turn your work into verifiable AI credentials'
 const docsMetaDescription =
   'Capture what you build, share your progress, and earn verifiable credentials that prove measurable real-world AI engineering work.'
@@ -65,6 +67,9 @@ const themeConfig: DocsThemeConfig = {
   },
   search: {
     placeholder: 'Search docs',
+  },
+  toc: {
+    extraContent: ChangelogTocExtra,
   },
 }
 

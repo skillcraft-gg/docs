@@ -423,9 +423,9 @@ export default function ChangelogPage() {
         <p className="docs-changelog-empty">No changelog entries are available yet.</p>
       ) : null}
 
-      {hasMounted && dayGroups.map((dayGroup) => (
-        <section key={dayGroup.key} className="docs-changelog-day">
-          <h1>{dayGroup.label}</h1>
+      {hasMounted && dayGroups.length > 0 ? dayGroups.map((dayGroup) => (
+        <section key={dayGroup.key} id={dayGroup.key} className="docs-changelog-day">
+          <h2>{dayGroup.label}</h2>
           {dayGroup.sections.map((section) => (
             <div key={`${dayGroup.key}-${section.key}`} className="docs-changelog-section">
               <h3>{section.label}</h3>
@@ -500,7 +500,7 @@ export default function ChangelogPage() {
             </div>
           ))}
         </section>
-      ))}
+      )) : null}
     </div>
   )
 }
