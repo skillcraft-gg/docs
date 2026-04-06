@@ -30,14 +30,15 @@ type DayGroup = {
 }
 
 type CommitSection = {
-  key: 'features' | 'fixes' | 'other'
+  key: 'releases' | 'features' | 'fixes' | 'other'
   label: string
   commits: DisplayCommit[]
 }
 
-const SECTION_ORDER: CommitSection['key'][] = ['features', 'fixes', 'other']
+const SECTION_ORDER: CommitSection['key'][] = ['releases', 'features', 'fixes', 'other']
 
 const SECTION_LABELS: Record<CommitSection['key'], string> = {
+  releases: 'Releases',
   features: 'Features',
   fixes: 'Fixes',
   other: 'Other',
@@ -54,18 +55,25 @@ const CHANGELOG_URLS = [
 ]
 
 const CONVENTIONAL_COMMIT_PATTERN = /^([a-z]+)(?:\([^)]+\))?!?:\s+/u
+const RELEASE_TAG_PATTERN = /^v(\d+)\.(\d+)\.(\d+)$/
 
 const initialPayloads = Array.isArray(snapshot) ? snapshot : []
 
 const getRepoUrl = (repo: string) => `https://github.com/skillcraft-gg/${repo}`
 const getTagUrl = (repo: string, tag: string) => `${getRepoUrl(repo)}/tree/${tag}`
+const getNpmVersionUrl = (tag: string) => `https://www.npmjs.com/package/skillcraft/v/${tag.replace(/^v/, '')}`
 
 const getCommitType = (message: string) => {
   const match = message.match(CONVENTIONAL_COMMIT_PATTERN)
   return match?.[1]?.toLowerCase() || ''
 }
 
-const getCommitSectionKey = (message: string): CommitSection['key'] | null => {
+const getCommitSectionKey = (commit: RepoCommit): CommitSection['key'] | null => {
+  if (commit.tags.length > 0) {
+    return 'releases'
+  }
+
+  const message = commit.message
   const type = getCommitType(message)
 
   if (!type || type === 'chore') {
@@ -98,6 +106,67 @@ const getDisplayMessage = (message: string) => {
 const parseTimestamp = (value: string) => {
   const parsed = Date.parse(value || '')
   return Number.isNaN(parsed) ? 0 : parsed
+}
+
+const getPrimaryReleaseTag = (commit: RepoCommit) => {
+  const releaseTags = commit.tags.filter((tag) => RELEASE_TAG_PATTERN.test(tag))
+  return releaseTags[releaseTags.length - 1] || ''
+}
+
+const getReleaseSeriesKey = (tag: string) => {
+  const match = tag.match(RELEASE_TAG_PATTERN)
+  if (!match) {
+    return ''
+  }
+
+  return `${match[1]}.${match[2]}`
+}
+
+const compareReleaseTags = (left: string, right: string) => {
+  const leftMatch = left.match(RELEASE_TAG_PATTERN)
+  const rightMatch = right.match(RELEASE_TAG_PATTERN)
+  if (!leftMatch || !rightMatch) {
+    return left.localeCompare(right, undefined, { numeric: true })
+  }
+
+  const leftParts = leftMatch.slice(1).map((value) => Number(value))
+  const rightParts = rightMatch.slice(1).map((value) => Number(value))
+  for (let index = 0; index < leftParts.length; index += 1) {
+    const diff = leftParts[index] - rightParts[index]
+    if (diff !== 0) {
+      return diff
+    }
+  }
+
+  return 0
+}
+
+const dedupeReleaseCommits = (commits: DisplayCommit[], dayKey: string) => {
+  const deduped = new Map<string, DisplayCommit>()
+
+  for (const commit of commits) {
+    const tag = getPrimaryReleaseTag(commit)
+    const series = getReleaseSeriesKey(tag)
+    if (!tag || !series) {
+      deduped.set(`${commit.repo}:${commit.sha}`, commit)
+      continue
+    }
+
+    const key = `${commit.repo}:${dayKey}:${series}`
+    const existing = deduped.get(key)
+    if (!existing) {
+      deduped.set(key, commit)
+      continue
+    }
+
+    const existingTag = getPrimaryReleaseTag(existing)
+    const tagComparison = compareReleaseTags(tag, existingTag)
+    if (tagComparison > 0 || (tagComparison === 0 && parseTimestamp(commit.committedAt) > parseTimestamp(existing.committedAt))) {
+      deduped.set(key, commit)
+    }
+  }
+
+  return Array.from(deduped.values())
 }
 
 const normalizeCommit = (value: unknown): RepoCommit | null => {
@@ -173,12 +242,12 @@ const buildDayGroups = (payloads: unknown[]): DayGroup[] => {
   const days = new Map<string, { label: string; sections: Map<CommitSection['key'], DisplayCommit[]> }>()
 
   for (const payload of payloads.map(normalizePayload).filter((item): item is RepoChangelog => Boolean(item))) {
-    const matchingCommits = payload.commits.filter((commit) => getCommitSectionKey(commit.message) !== null)
+    const matchingCommits = payload.commits.filter((commit) => getCommitSectionKey(commit) !== null)
 
     for (const commit of matchingCommits) {
       const commitDate = new Date(commit.committedAt)
       const dayKey = toLocalDayKey(commitDate)
-      const sectionKey = getCommitSectionKey(commit.message)
+      const sectionKey = getCommitSectionKey(commit)
 
       if (!sectionKey) {
         continue
@@ -206,16 +275,20 @@ const buildDayGroups = (payloads: unknown[]): DayGroup[] => {
       key,
       label: day.label,
       sections: SECTION_ORDER
-        .map((sectionKey) => ({
-          key: sectionKey,
-          label: SECTION_LABELS[sectionKey],
-          commits: [...(day.sections.get(sectionKey) || [])].sort(
+        .map((sectionKey) => {
+          const commits = [...(day.sections.get(sectionKey) || [])].sort(
             (left, right) =>
               parseTimestamp(right.committedAt) - parseTimestamp(left.committedAt)
               || left.repo.localeCompare(right.repo)
               || left.sha.localeCompare(right.sha),
-          ),
-        }))
+          )
+
+          return {
+            key: sectionKey,
+            label: SECTION_LABELS[sectionKey],
+            commits: sectionKey === 'releases' ? dedupeReleaseCommits(commits, key) : commits,
+          }
+        })
         .filter((section) => section.commits.length > 0),
     }))
     .filter((group) => group.sections.length > 0)
@@ -327,28 +400,17 @@ export default function ChangelogPage() {
               <ul className="docs-changelog-list">
                 {section.commits.map((commit) => (
                   <li key={`${commit.repo}-${commit.sha}`}>
-                    {getDisplayMessage(commit.message)} (
-                    <a
-                      className="docs-changelog-hash"
-                      href={commit.url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {commit.sha.slice(0, 7)}
-                    </a>{' '}
-                    in{' '}
-                    <a
-                      className="docs-changelog-repo-link"
-                      href={getRepoUrl(commit.repo)}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {commit.repo}
-                    </a>
-                    {commit.tags.length > 0 ? (
-                      <span className="docs-changelog-tags">
-                        {' '}
-                        tagged{' '}
+                    {section.key === 'releases' ? (
+                      <span className="docs-changelog-release">
+                        <a
+                          className="docs-changelog-repo-link"
+                          href={getRepoUrl(commit.repo)}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {commit.repo}
+                        </a>{' '}
+                        release{' '}
                         {commit.tags.map((tag, index) => (
                           <span key={`${commit.repo}-${commit.sha}-${tag}`}>
                             {index > 0 ? ', ' : null}
@@ -362,9 +424,43 @@ export default function ChangelogPage() {
                             </a>
                           </span>
                         ))}
+                        {commit.repo === 'skillcraft' && getPrimaryReleaseTag(commit) ? (
+                          <a
+                            className="docs-changelog-npm-link"
+                            href={getNpmVersionUrl(getPrimaryReleaseTag(commit))}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <span className="docs-changelog-npm-icon" aria-hidden="true">
+                              <NpmLogo />
+                            </span>
+                            View on npm
+                          </a>
+                        ) : null}
                       </span>
-                    ) : null}
-                    )
+                    ) : (
+                      <>
+                        {getDisplayMessage(commit.message)} (
+                        <a
+                          className="docs-changelog-hash"
+                          href={commit.url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {commit.sha.slice(0, 7)}
+                        </a>{' '}
+                        in{' '}
+                        <a
+                          className="docs-changelog-repo-link"
+                          href={getRepoUrl(commit.repo)}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {commit.repo}
+                        </a>
+                        )
+                      </>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -375,3 +471,12 @@ export default function ChangelogPage() {
     </div>
   )
 }
+
+const NpmLogo = () => (
+  <svg viewBox="0 0 18 7" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <path fill="#CB3837" d="M0,0h18v6H9v1H5V6H0V0z M1,5h2V2h1v3h1V1H1V5z M6,1v5h2V5h2V1H6z M8,2h1v2H8V2z M11,1v4h2V2h1v3h1V2h1v3h1V1H11z" />
+    <polygon fill="#FFFFFF" points="1,5 3,5 3,2 4,2 4,5 5,5 5,1 1,1 " />
+    <path fill="#FFFFFF" d="M6,1v5h2V5h2V1H6z M9,4H8V2h1V4z" />
+    <polygon fill="#FFFFFF" points="11,1 11,5 13,5 13,2 14,2 14,5 15,5 15,2 16,2 16,5 17,5 17,1 " />
+  </svg>
+)
