@@ -1,3 +1,5 @@
+import { Tabs } from 'nextra/components'
+
 # Installation
 
 This page documents the concrete setup flow before you start claim workflows.
@@ -9,7 +11,7 @@ The following needs to be available in `PATH`:
 - `node`, `npm` Node.js and npm ([Download](https://nodejs.org/))
 - `git` Git ([Download](https://git-scm.com/downloads))
 - `gh` GitHub CLI ([Download](https://cli.github.com/)) and authenticated with `gh auth login`
-- `opencode` OpenCode ([Download](https://opencode.ai/))
+- one or both supported AI coding agents: `opencode` OpenCode ([Download](https://opencode.ai/)) or `codex` Codex CLI ([Install docs](https://developers.openai.com/codex/cli))
 
 You will also need:
 
@@ -20,21 +22,36 @@ You will also need:
 
 Use your preferred package manager:
 
+<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
+  <Tabs.Tab>
+
 ```bash
 npm install -g skillcraft
 ```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
 
 ```bash
 pnpm add -g skillcraft
 ```
 
+  </Tabs.Tab>
+  <Tabs.Tab>
+
 ```bash
 yarn global add skillcraft
 ```
 
+  </Tabs.Tab>
+  <Tabs.Tab>
+
 ```bash
 bun add -g skillcraft
 ```
+
+  </Tabs.Tab>
+</Tabs>
 
 ## 3. Verify the install
 
@@ -47,6 +64,8 @@ skillcraft doctor
 ```
 
 If the command is not found, restart your shell and confirm your global bin directory is in `PATH`.
+
+`skillcraft doctor` reports both OpenCode and Codex CLI so you can confirm which agents are available before enabling a repository.
 
 ## 4. Quick next step
 

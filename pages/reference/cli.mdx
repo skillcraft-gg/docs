@@ -24,9 +24,12 @@ Initialize Skillcraft in the current repository.
 
 ```bash
 skillcraft enable
+skillcraft enable --agent opencode
+skillcraft enable --agent codex
+skillcraft enable --agent opencode --agent codex
 ```
 
-Use once per repository.
+If one supported agent is installed, `skillcraft enable` uses it automatically. If both OpenCode and Codex CLI are detected, Skillcraft prompts unless `--agent` is supplied. `--agent` is repeatable and also accepts comma-separated values.
 
 ## `skillcraft disable`
 
@@ -34,7 +37,11 @@ Disable Skillcraft for the current repository and remove local integration state
 
 ```bash
 skillcraft disable
+skillcraft disable --agent opencode
+skillcraft disable --agent codex
 ```
+
+Use `--agent` to remove one integration while leaving others enabled for the same repository.
 
 ## `skillcraft status`
 
@@ -51,6 +58,8 @@ Run installation and environment readiness checks.
 ```bash
 skillcraft doctor
 ```
+
+The doctor output reports both `opencode` and `codex`, along with the detected supported agents.
 
 ## `skillcraft repos`
 
@@ -104,7 +113,7 @@ skillcraft skills inspect <id>
 skillcraft skills search [query] [--source <source>] [--limit <n>]
 ```
 
-- `skills add <id>` queues a local or external skill ID for evidence collection.
+- `skills add <id>` installs a local or external skill into `.agents/skills` for the current project.
 - `skills publish <owner-slug>` publishes a local skill to the registry.
 - `skills validate` checks local skill layout.
 - `skills list` prints detected skills.
@@ -112,6 +121,8 @@ skillcraft skills search [query] [--source <source>] [--limit <n>]
 - `skills search [query]` browses the published index.
   - `--source <source>` filters by source.
   - `--limit <n>` caps displayed results.
+
+Installed skill evidence is recorded when a supported coding agent actually uses the installed skill.
 
 ## `skillcraft verify`
 

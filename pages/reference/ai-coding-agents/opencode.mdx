@@ -1,5 +1,12 @@
 # OpenCode
 
+| Capability | Support |
+|---|---|
+| Status | Supported |
+| Captures provenance | Yes |
+| Supports skills | Yes |
+| Integration type | Repo-local plugin |
+
 ## Status
 
 Supported.
@@ -10,7 +17,7 @@ OpenCode is supported as an evidence-aware coding agent.
 
 ## Enable flow
 
-When you run `skillcraft enable`, Skillcraft writes a managed plugin at:
+When you run `skillcraft enable --agent opencode`, Skillcraft writes a managed plugin at:
 
 `.opencode/plugins/skillcraft.mjs`
 
@@ -26,8 +33,13 @@ The plugin captures runtime model provenance from OpenCode chat messages and per
 
 These values are merged into each generated proof.
 
+## Skill support
+
+OpenCode skill usage is captured through the managed plugin by watching OpenCode skill tool execution and recording the matching installed Skillcraft skill ID.
+
 ## Notes
 
 - Keep normal git history visible to Skillcraft.
-- Run standard `skillcraft enable`, commit, and claim flow.
+- Run `skillcraft enable --agent opencode`, or let `skillcraft enable` detect OpenCode automatically.
+- Multiple agents can be enabled for the same repository.
 - Run `skillcraft disable` to remove the generated plugin and provenance state file.

@@ -4,15 +4,15 @@ This table tracks which AI coding agent CLIs are supported by Skillcraft, along 
 
 ## Integration status
 
-| Agent | Status | Notes |
-|---|---|---|
-| [OpenCode](./opencode) | Supported | Current supported coding agent CLI |
-| Claude Code | Coming soon | Planned support for future release |
-| Gemini CLI | Coming soon | Planned support for future release |
-| GitHub Copilot CLI | Coming soon | Planned support for future release |
-| Codex CLI | Coming soon | Planned support for future release |
+| Agent | Status | Captures Provenance | Supports Skills | Notes |
+|---|---|---|---|---|
+| [OpenCode](./opencode) | Supported | Yes | Yes | Repo-local managed plugin integration with skill tool capture |
+| [Codex CLI](./codex-cli) | Supported | Yes | Yes | Explicit skill capture today via repo-local hooks; implicit capture is pending an upstream Codex hook patch |
+| Claude Code | Coming soon | - | - | Planned support for future release |
+| Gemini CLI | Coming soon | - | - | Planned support for future release |
+| GitHub Copilot CLI | Coming soon | - | - | Planned support for future release |
 
-Only OpenCode is currently available. Coming soon pages are intentionally available for routing consistency and future documentation.
+Skillcraft currently supports OpenCode and Codex CLI. `skillcraft enable` detects available agents automatically and prompts when both are available unless `--agent` is supplied.
 
 ## Next steps
 

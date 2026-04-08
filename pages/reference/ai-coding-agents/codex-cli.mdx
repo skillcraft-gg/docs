@@ -1,14 +1,55 @@
 # Codex CLI
 
+| Capability | Support |
+|---|---|
+| Status | Supported |
+| Captures provenance | Yes |
+| Supports skills | Yes |
+| Integration type | Repo-local hooks + plugin marketplace |
+
 ## Status
 
-Planned, coming soon.
+Supported.
 
 ## Current state
 
-Codex CLI support is planned and this page is reserved for upcoming integration details.
+Codex CLI is supported as an evidence-aware coding agent.
 
-## Coming soon
+## Enable flow
 
-- Planned support matrix and CLI command compatibility notes.
-- Planned local repository usage guidance.
+When you run `skillcraft enable --agent codex`, Skillcraft writes repo-local Codex integration files:
+
+- `.codex/hooks.json`
+- `.codex/config.toml`
+- `.agents/plugins/marketplace.json`
+- `plugins/skillcraft-codex/`
+
+The Codex hook writes runtime model provenance to:
+
+`.git/skillcraft/ai-model-context.json`
+
+## Captured provenance fields
+
+- `agent.provider`
+- `model.name`
+- `model.provider` when Codex exposes it to the hook payload
+
+These values are merged into each generated proof.
+
+## Skill support
+
+Skillcraft records Codex skill usage today by reading the current turn transcript from Codex's rollout file after the turn finishes.
+
+This is implemented through repo-local Codex hooks, so Skillcraft can support Codex skill proofs without waiting for a dedicated Codex skill hook event.
+
+## Limitations
+
+- Current released Codex support captures explicit skill usage only.
+- Implicit skill usage detected from Bash command execution is not yet exposed by Codex's public hook payloads.
+- An upstream Codex hook patch is in progress to expose direct skill metadata to `Stop` hooks so Skillcraft can capture implicit usage without relying on downstream heuristics.
+
+## Notes
+
+- Repo-local Codex config is only active when the project is trusted in Codex.
+- Restart Codex after enabling so it picks up the generated repo-local config and marketplace files.
+- Skillcraft only manages repo-local Codex files for the current project.

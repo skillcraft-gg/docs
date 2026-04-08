@@ -1,5 +1,6 @@
 {
   "opencode": "OpenCode",
+  "codex-cli": "Codex CLI",
   "claude-code": {
     "title": "Claude Code",
     "display": "hidden"
@@ -10,10 +11,6 @@
   },
   "github-copilot-cli": {
     "title": "GitHub Copilot CLI",
-    "display": "hidden"
-  },
-  "codex-cli": {
-    "title": "Codex CLI",
     "display": "hidden"
   }
 }
