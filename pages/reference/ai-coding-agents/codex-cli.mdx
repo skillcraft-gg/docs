@@ -4,7 +4,7 @@
 |---|---|
 | Status | Supported |
 | Captures provenance | Yes |
-| Supports skills | Yes |
+| Supports skills | Partial |
 | Integration type | Repo-local hooks + plugin marketplace |
 
 ## Status
@@ -38,15 +38,15 @@ These values are merged into each generated proof.
 
 ## Skill support
 
-Skillcraft records Codex skill usage today by reading the current turn transcript from Codex's rollout file after the turn finishes.
+Skillcraft has partial Codex skill support today. It records explicit skill usage by reading the current turn transcript from Codex's rollout file after the turn finishes.
 
 This is implemented through repo-local Codex hooks, so Skillcraft can support Codex skill proofs without waiting for a dedicated Codex skill hook event.
 
 ## Limitations
 
-- Current released Codex support captures explicit skill usage only.
+- Current released Codex skill support is partial and captures explicit skill usage only.
 - Implicit skill usage detected from Bash command execution is not yet exposed by Codex's public hook payloads.
-- An upstream Codex hook patch is in progress to expose direct skill metadata to `Stop` hooks so Skillcraft can capture implicit usage without relying on downstream heuristics.
+- An upstream Codex issue has been raised to expose direct skill metadata to `Stop` hooks so Skillcraft can capture implicit usage without relying on downstream heuristics. Track it in [openai/codex#17132](https://github.com/openai/codex/issues/17132).
 
 ## Notes
 
