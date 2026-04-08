@@ -17,6 +17,21 @@ type DisplayCommit = RepoCommit & {
   repo: string
 }
 
+type CommitReference = DisplayCommit
+
+type RenderCommit =
+  | {
+      kind: 'release'
+      commit: DisplayCommit
+    }
+  | {
+      kind: 'commit'
+      message: string
+      references: CommitReference[]
+      unreleased: boolean
+      committedAt: string
+    }
+
 type RepoChangelog = {
   repo: string
   branch: string
@@ -33,7 +48,7 @@ type DayGroup = {
 type CommitSection = {
   key: 'releases' | 'features' | 'fixes' | 'other'
   label: string
-  commits: DisplayCommit[]
+  commits: RenderCommit[]
 }
 
 const SECTION_ORDER: CommitSection['key'][] = ['releases', 'features', 'fixes', 'other']
@@ -171,6 +186,47 @@ const dedupeReleaseCommits = (commits: DisplayCommit[], dayKey: string) => {
   }
 
   return Array.from(deduped.values())
+}
+
+const collapseCommitRows = (commits: DisplayCommit[]) => {
+  const grouped = new Map<string, { message: string; references: CommitReference[]; committedAt: string; unreleased: boolean }>()
+
+  for (const commit of commits) {
+    const message = getDisplayMessage(commit.message)
+    const key = message.toLowerCase()
+    const existing = grouped.get(key)
+    if (!existing) {
+      grouped.set(key, {
+        message,
+        references: [commit],
+        committedAt: commit.committedAt,
+        unreleased: commit.unreleased,
+      })
+      continue
+    }
+
+    existing.references.push(commit)
+    if (parseTimestamp(commit.committedAt) > parseTimestamp(existing.committedAt)) {
+      existing.committedAt = commit.committedAt
+    }
+    existing.unreleased = existing.unreleased || commit.unreleased
+  }
+
+  return Array.from(grouped.values())
+    .map((entry) => ({
+      kind: 'commit' as const,
+      message: entry.message,
+      references: entry.references.sort(
+        (left, right) => left.repo.localeCompare(right.repo) || left.sha.localeCompare(right.sha),
+      ),
+      unreleased: entry.unreleased,
+      committedAt: entry.committedAt,
+    }))
+    .sort(
+      (left, right) =>
+        parseTimestamp(right.committedAt) - parseTimestamp(left.committedAt)
+        || left.message.localeCompare(right.message),
+    )
 }
 
 const markUnreleasedCommits = (repo: string, commits: RepoCommit[]) => {
@@ -312,7 +368,10 @@ const buildDayGroups = (payloads: unknown[]): DayGroup[] => {
           return {
             key: sectionKey,
             label: SECTION_LABELS[sectionKey],
-            commits: sectionKey === 'releases' ? dedupeReleaseCommits(commits, key) : commits,
+            commits:
+              sectionKey === 'releases'
+                ? dedupeReleaseCommits(commits, key).map((commit) => ({ kind: 'release' as const, commit }))
+                : collapseCommitRows(commits),
           }
         })
         .filter((section) => section.commits.length > 0),
@@ -431,24 +490,30 @@ export default function ChangelogPage() {
               <h3>{section.label}</h3>
               <ul className="docs-changelog-list">
                 {section.commits.map((commit) => (
-                  <li key={`${commit.repo}-${commit.sha}`}>
-                    {section.key === 'releases' ? (
+                  <li
+                    key={
+                      commit.kind === 'release'
+                        ? `${commit.commit.repo}-${commit.commit.sha}`
+                        : `${commit.message}-${commit.references.map((reference) => `${reference.repo}-${reference.sha}`).join('-')}`
+                    }
+                  >
+                    {commit.kind === 'release' ? (
                       <span className="docs-changelog-release">
                         <a
                           className="docs-changelog-repo-link"
-                          href={getRepoUrl(commit.repo)}
+                          href={getRepoUrl(commit.commit.repo)}
                           target="_blank"
                           rel="noreferrer"
                         >
-                          {commit.repo}
+                          {commit.commit.repo}
                         </a>{' '}
                         release{' '}
-                        {commit.tags.map((tag, index) => (
-                          <span key={`${commit.repo}-${commit.sha}-${tag}`}>
+                        {commit.commit.tags.map((tag, index) => (
+                          <span key={`${commit.commit.repo}-${commit.commit.sha}-${tag}`}>
                             {index > 0 ? ', ' : null}
                             <a
                               className="docs-changelog-tag"
-                              href={getTagUrl(commit.repo, tag)}
+                              href={getTagUrl(commit.commit.repo, tag)}
                               target="_blank"
                               rel="noreferrer"
                             >
@@ -456,10 +521,10 @@ export default function ChangelogPage() {
                             </a>
                           </span>
                         ))}
-                        {commit.repo === 'skillcraft' && getPrimaryReleaseTag(commit) ? (
+                        {commit.commit.repo === 'skillcraft' && getPrimaryReleaseTag(commit.commit) ? (
                           <a
                             className="docs-changelog-npm-link"
-                            href={getNpmVersionUrl(getPrimaryReleaseTag(commit))}
+                            href={getNpmVersionUrl(getPrimaryReleaseTag(commit.commit))}
                             target="_blank"
                             rel="noreferrer"
                           >
@@ -472,24 +537,29 @@ export default function ChangelogPage() {
                       </span>
                     ) : (
                       <>
-                        {getDisplayMessage(commit.message)} (
-                        <a
-                          className="docs-changelog-hash"
-                          href={commit.url}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {commit.sha.slice(0, 7)}
-                        </a>{' '}
-                        in{' '}
-                        <a
-                          className="docs-changelog-repo-link"
-                          href={getRepoUrl(commit.repo)}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {commit.repo}
-                        </a>
+                        {commit.message} (
+                        {commit.references.map((reference, index) => (
+                          <span key={`${reference.repo}-${reference.sha}`}>
+                            {index > 0 ? ', ' : null}
+                            <a
+                              className="docs-changelog-hash"
+                              href={reference.url}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {reference.sha.slice(0, 7)}
+                            </a>{' '}
+                            in{' '}
+                            <a
+                              className="docs-changelog-repo-link"
+                              href={getRepoUrl(reference.repo)}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {reference.repo}
+                            </a>
+                          </span>
+                        ))}
                         )
                         {commit.unreleased ? <span className="docs-changelog-unreleased">*</span> : null}
                       </>
