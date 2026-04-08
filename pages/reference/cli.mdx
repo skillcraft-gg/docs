@@ -31,6 +31,8 @@ skillcraft enable --agent opencode --agent codex
 
 If one supported agent is installed, `skillcraft enable` uses it automatically. If both OpenCode and OpenAI Codex are detected, Skillcraft prompts unless `--agent` is supplied. `--agent` is repeatable and also accepts comma-separated values.
 
+Skillcraft installs its git hooks into the repository's active hooks path, so it works with repo-local setups such as Husky's `.husky` directory. If a repository disables hooks entirely with `core.hooksPath=/dev/null`, `skillcraft enable` fails until hooks are re-enabled.
+
 ## `skillcraft disable`
 
 Disable Skillcraft for the current repository and remove local integration state.
