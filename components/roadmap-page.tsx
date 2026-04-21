@@ -31,7 +31,6 @@ type RepoRoadmap = {
 type RoadmapSection = {
   key: RoadmapStatus
   label: string
-  description: string
   issues: DisplayRoadmapIssue[]
 }
 
@@ -52,13 +51,6 @@ const ROADMAP_STATUS_LABELS: Record<RoadmapStatus, string> = {
   next: 'Next',
   later: 'Later',
   released: 'Released',
-}
-
-const ROADMAP_STATUS_DESCRIPTIONS: Record<RoadmapStatus, string> = {
-  now: 'Active work shipping now across Skillcraft repos.',
-  next: 'Queued work expected soon after current priorities land.',
-  later: 'Longer-horizon work we still intend to tackle.',
-  released: 'Shipped work kept visible for roadmap continuity.',
 }
 
 const initialPayloads = Array.isArray(snapshot) ? snapshot : []
@@ -168,7 +160,6 @@ const buildSections = (payloads: unknown[]): RoadmapSection[] => {
   return ROADMAP_STATUS_ORDER.map((status) => ({
     key: status,
     label: ROADMAP_STATUS_LABELS[status],
-    description: ROADMAP_STATUS_DESCRIPTIONS[status],
     issues: [...(issuesByStatus.get(status) || [])].sort(
       (left, right) =>
         parseTimestamp(right.updatedAt) - parseTimestamp(left.updatedAt)
@@ -236,7 +227,6 @@ export default function RoadmapPage() {
       <div className="docs-roadmap-toolbar">
         <div className="docs-roadmap-toolbar-copy">
           {refreshedAt ? <p className="docs-roadmap-meta">Last refreshed: {new Date(refreshedAt).toLocaleString()}</p> : null}
-          <p className="docs-roadmap-meta docs-roadmap-note">Roadmap sections come from issue labels across published Skillcraft repos.</p>
         </div>
         <button
           type="button"
@@ -274,7 +264,6 @@ export default function RoadmapPage() {
       {hasMounted && sections.length > 0 ? sections.map((section) => (
         <section key={section.key} id={`roadmap-${section.key}`} className="docs-roadmap-section">
           <h2>{section.label}</h2>
-          <p className="docs-roadmap-section-description">{section.description}</p>
           <ul className="docs-roadmap-list">
             {section.issues.map((issue) => (
               <li key={`${issue.repo}-${issue.number}`} className="docs-roadmap-item">
