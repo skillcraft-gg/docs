@@ -1,0 +1,9 @@
+name: Build roadmap JSON
+description: Generate meta/roadmap.json from labeled GitHub issues
+
+runs:
+  using: composite
+  steps:
+    - name: Generate roadmap JSON
+      shell: bash
+      run: node "$GITHUB_ACTION_PATH/build-roadmap.mjs"

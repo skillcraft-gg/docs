@@ -3,3 +3,4 @@ node_modules
 out
 meta/
 data/changelog-snapshot.json
+data/roadmap-snapshot.json

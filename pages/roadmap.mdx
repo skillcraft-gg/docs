@@ -1,56 +1,14 @@
+import RoadmapPage from '../components/roadmap-page'
+
 # Roadmap
 
-This page tracks the public direction for Skillcraft. It will evolve based on Beta feedback from the community. [Join the Discussion](https://github.com/orgs/skillcraft-gg/discussions/new/choose) if you want to help shape what comes next.
+This page tracks public Skillcraft direction from labeled GitHub issues across published repos. It updates as roadmap labels move, and live refresh can pick up newly published metadata without rebuilding docs. [Join the Discussion](https://github.com/orgs/skillcraft-gg/discussions/new/choose) if you want to help shape what comes next.
 
-## Current focus
+Roadmap labels:
 
-- Expand the beta beyond the first public GitHub workflow while keeping verification clear and trustworthy.
-- Improve the end-to-end developer experience across the CLI, docs, and `Skillcraft.gg`.
-- Make published credentials, skills, and supporting evidence feel more connected and easier to navigate.
+- `roadmap:now` for active work in flight.
+- `roadmap:next` for queued work expected soon.
+- `roadmap:later` for longer-horizon work.
+- `roadmap:released` for shipped work kept visible in roadmap history.
 
-## AI coding agent support
-
-- OpenCode: Released ✅
-- OpenAI Codex: Released ✅
-- Claude Code: Next 🚀
-- Gemini CLI: Later ⏳
-- GitHub Copilot CLI: Later ⏳
-
-## VCS integration support
-
-- Public GitHub repositories: Released ✅
-- Private GitHub repositories: Next 🚀
-- GitHub Enterprise Cloud: Later ⏳
-- GitLab: Later ⏳
-- Bitbucket: Later ⏳
-
-## Skillcraft.gg
-
-- Main site, docs, skills, and credentials routes: Released ✅
-- Whitepaper initial version: Released ✅
-- Login with GitHub: Next 🚀
-- Clearer links between skills, credentials, and workflow evidence: Next 🚀
-
-## Skillcraft CLI
-
-- Core beta workflow around `enable`, `progress`, `claim`, and `verify`: Released ✅
-- Overall developer experience and consistency of outputs: Next 🚀
-- Better supported-agent setup, status, and docs ergonomics: Next 🚀
-- Tools for credential creators: Later ⏳
-
-## Skillcraft Credential Ledger
-
-- Credential definitions and issued receipts: Released ✅
-- Verify private repositories in claims: Next 🚀
-- Trigger rebuilds of `Skillcraft.gg` to reduce credential publishing time: Next 🚀
-- Broader credential coverage beyond the first beta workflow: Later ⏳
-
-## Skillcraft Skills Registry
-
-- Published skill catalog and search index: Released ✅
-- Better metadata consistency and discovery across published skills: Next 🚀
-- Trigger rebuilds of `Skillcraft.gg` to reduce skills publishing time: Next 🚀
-
-## Loadouts
-
-- Loadouts support: Later ⏳
+<RoadmapPage />

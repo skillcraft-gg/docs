@@ -5,14 +5,22 @@ on:
     branches:
       - main
   workflow_dispatch:
+  issues:
+    types: [opened, edited, labeled, unlabeled, reopened, closed]
 
 permissions:
   contents: read
+  issues: read
   pages: write
   id-token: write
 
 jobs:
   build:
+    if: >
+      github.event_name != 'issues' ||
+      (github.event.action == 'labeled' && contains(fromJSON('["roadmap:now","roadmap:next","roadmap:later","roadmap:released"]'), github.event.label.name)) ||
+      (github.event.action == 'unlabeled' && contains(fromJSON('["roadmap:now","roadmap:next","roadmap:later","roadmap:released"]'), github.event.label.name)) ||
+      (contains(fromJSON('["opened","edited","reopened","closed"]'), github.event.action) && (contains(github.event.issue.labels.*.name, 'roadmap:now') || contains(github.event.issue.labels.*.name, 'roadmap:next') || contains(github.event.issue.labels.*.name, 'roadmap:later') || contains(github.event.issue.labels.*.name, 'roadmap:released')))
     runs-on: ubuntu-latest
 
     steps:
@@ -30,6 +38,8 @@ jobs:
         run: npm install
 
       - name: Build docs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run build
 
       - name: Prepare publish artifact
@@ -38,6 +48,7 @@ jobs:
           mkdir -p publish/meta
           cp -R out/* publish/
           cp meta/changelog.json publish/meta/changelog.json
+          cp meta/roadmap.json publish/meta/roadmap.json
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
