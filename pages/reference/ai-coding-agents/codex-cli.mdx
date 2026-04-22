@@ -5,6 +5,7 @@
 | Status | Supported |
 | Captures provenance | Yes |
 | Supports skills | Partial |
+| Learn Mode | Coming soon |
 | Integration type | Repo-local hooks + plugin marketplace |
 
 ## Status
@@ -47,6 +48,7 @@ This is implemented through repo-local Codex hooks, so Skillcraft can support Co
 - Current released Codex skill support is partial and captures explicit skill usage only.
 - Implicit skill usage detected from Bash command execution is not yet exposed by Codex's public hook payloads.
 - An upstream Codex issue has been raised to add first-class `PreSkillUse` and `PostSkillUse` hooks for explicit and implicit skill usage. Track it in [openai/codex#17132](https://github.com/openai/codex/issues/17132).
+- Codex Learn Mode is not enabled yet. If both OpenCode and Codex are installed, `skillcraft learn` currently requires choosing OpenCode.
 
 ## Notes
 

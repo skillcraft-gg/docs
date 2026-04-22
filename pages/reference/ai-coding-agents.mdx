@@ -4,17 +4,20 @@ This table tracks which AI coding agent CLIs are supported by Skillcraft, along 
 
 ## Integration status
 
-| Agent | Status | Captures Provenance | Supports Skills | Notes |
-|---|---|---|---|---|
-| [OpenCode](./opencode) | Supported | Yes | Yes | Repo-local managed plugin integration with skill tool capture |
-| [Codex CLI](./codex-cli) | Supported | Yes | Partial | Explicit skill capture today via repo-local hooks; fuller skill capture depends on upstream Codex skill hook support tracked in [openai/codex#17132](https://github.com/openai/codex/issues/17132) |
-| Claude Code | Coming soon | - | - | Planned support for future release |
-| Gemini CLI | Coming soon | - | - | Planned support for future release |
-| GitHub Copilot CLI | Coming soon | - | - | Planned support for future release |
+| Agent | Status | Captures Provenance | Supports Skills | Learn Mode | Notes |
+|---|---|---|---|---|---|
+| [OpenCode](./opencode) | Supported | Yes | Yes | Yes | Repo-local managed plugin integration with skill tool capture |
+| [Codex CLI](./codex-cli) | Supported | Yes | Partial | Coming soon | Explicit skill capture today via repo-local hooks; fuller skill capture depends on upstream Codex skill hook support tracked in [openai/codex#17132](https://github.com/openai/codex/issues/17132) |
+| Claude Code | Coming soon | - | - | - | Planned support for future release |
+| Gemini CLI | Coming soon | - | - | - | Planned support for future release |
+| GitHub Copilot CLI | Coming soon | - | - | - | Planned support for future release |
 
-Skillcraft currently supports OpenCode and OpenAI Codex. `skillcraft enable` detects available agents automatically and prompts when both are available unless `--agent` is supplied.
+Skillcraft currently supports OpenCode and OpenAI Codex for evidence capture. `skillcraft enable` detects available agents automatically and prompts when both are available unless `--agent` is supplied.
+
+`skillcraft learn` currently supports OpenCode Learn Mode only. Codex Learn Mode is planned but not enabled yet.
 
 ## Next steps
 
 - [VCS Integrations](../vcs-integrations)
 - [CLI reference](../cli)
+- [Learn Mode tutorial](../../tutorials/learn-mode)

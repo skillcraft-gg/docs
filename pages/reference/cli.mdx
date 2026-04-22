@@ -63,6 +63,21 @@ skillcraft doctor
 
 The doctor output reports both `opencode` and `codex`, along with the detected supported agents.
 
+## `skillcraft learn`
+
+Start a guided Learn Mode session in the current git repository.
+
+```bash
+skillcraft learn
+skillcraft learn --agent opencode
+```
+
+If OpenCode is installed, `skillcraft learn` prepares a temporary guided session and launches the supported agent for the repository root. If both OpenCode and Codex are detected, Skillcraft prompts for agent selection, but Codex Learn Mode is not enabled yet.
+
+During the session, Skillcraft writes temporary local guidance files so the agent behaves like a learning coach. When the session exits, Skillcraft removes those temporary files and prints a reminder that Learn Mode is disabled until you run `skillcraft learn` again.
+
+If the repository is not already enabled for Skillcraft evidence capture, Learn Mode tells the agent to mention `skillcraft enable --agent opencode` as an optional next step, but it should not run that command unless you explicitly ask.
+
 ## `skillcraft repos`
 
 Manage tracked repositories.
@@ -180,3 +195,4 @@ Provides usage details for a specific command.
 
 - [Getting started](../getting-started)
 - [Your first credential](../tutorials/first-credential)
+- [Learn Mode](../tutorials/learn-mode)

@@ -5,6 +5,7 @@
 | Status | Supported |
 | Captures provenance | Yes |
 | Supports skills | Yes |
+| Learn Mode | Yes |
 | Integration type | Repo-local plugin |
 
 ## Status
@@ -37,9 +38,22 @@ These values are merged into each generated proof.
 
 OpenCode skill usage is captured through the managed plugin by watching OpenCode skill tool execution and recording the matching installed Skillcraft skill ID.
 
+## Learn Mode
+
+OpenCode currently supports Skillcraft Learn Mode.
+
+Run:
+
+```bash
+skillcraft learn
+```
+
+Skillcraft prepares a temporary guided session that makes the agent behave like a learning coach, then launches the session in the repository root.
+
 ## Notes
 
 - Keep normal git history visible to Skillcraft.
 - Run `skillcraft enable --agent opencode`, or let `skillcraft enable` detect OpenCode automatically.
+- Run `skillcraft learn` when you want guided co-creation instead of normal autonomous execution.
 - Multiple agents can be enabled for the same repository.
 - Run `skillcraft disable` to remove the generated plugin and provenance state file.

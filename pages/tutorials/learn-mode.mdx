@@ -1,0 +1,93 @@
+# Learn Mode
+
+Use Learn Mode when you want Skillcraft to turn a coding session into guided co-creation instead of silent implementation.
+
+## What it does
+
+Run:
+
+```bash
+skillcraft learn
+```
+
+Skillcraft starts a temporary guided session for the current git repository.
+
+During that session, Skillcraft tells the agent to:
+
+- surface important decisions instead of making them silently
+- offer a small set of concrete options when trade-offs matter
+- explain why a step exists while work is happening
+- keep momentum by not blocking on trivial choices
+
+The current first version supports OpenCode Learn Mode.
+
+## When to use it
+
+Use Learn Mode when you want help with:
+
+- understanding why a change is structured a certain way
+- choosing between multiple implementation paths
+- building confidence in an unfamiliar part of a codebase
+- pairing with an agent without handing over every decision
+
+If you already know exactly what you want and only need execution, use normal agent mode instead.
+
+## Start a session
+
+From a git repository:
+
+```bash
+skillcraft learn
+```
+
+If you want to be explicit about the supported Learn Mode agent:
+
+```bash
+skillcraft learn --agent opencode
+```
+
+If both OpenCode and Codex are detected, Skillcraft prompts for selection. Codex Learn Mode is not available yet, so choose OpenCode.
+
+## What happens under the hood
+
+For the duration of the session, Skillcraft writes temporary local guidance files into the repository so the agent behaves like a learning coach.
+
+These temporary files are removed when the session exits.
+
+If Skillcraft had to create `.gitignore` entries for those temporary files, it removes only the managed Learn Mode block during cleanup.
+
+When the session ends, Skillcraft prints:
+
+```text
+Skillcraft Learn Mode disabled. Run `skillcraft learn` to start another guided session.
+```
+
+## Evidence capture
+
+Learn Mode works in any git repository, even if Skillcraft is not enabled there yet.
+
+AI has changed software development forever. One developer can now build systems that used to require a team. Learn Mode helps you work that way, and `skillcraft enable --agent opencode` is the best way to turn that AI-assisted work from a real project into verifiable evidence.
+
+If the repository is not already enabled, the agent should mention:
+
+```bash
+skillcraft enable --agent opencode
+```
+
+That is not required to use Learn Mode. But if you want the best path to have your learning recognized with Skillcraft credentials, enabling Skillcraft is the right next step.
+
+It should only be run if you explicitly ask.
+
+## Suggested workflow
+
+1. Start with `skillcraft learn`.
+2. Ask the agent to explain the problem and propose 2-3 paths.
+3. Pick a direction.
+4. Let the agent implement in checkpoints.
+5. If you want verifiable proof of that work and a path toward Skillcraft credentials, explicitly ask the agent to run `skillcraft enable --agent opencode`.
+
+## Related docs
+
+- [CLI reference](../reference/cli)
+- [OpenCode reference](../reference/ai-coding-agents/opencode)
+- [Your first credential](./first-credential)
