@@ -16,7 +16,13 @@ skillcraft [options] [command]
 -v, --version output version number
 ```
 
-`--json` is supported by commands that include structured output.
+`--json` is supported across CLI commands.
+
+In `--json` mode, Skillcraft writes exactly one JSON object, disables prompts/spinners/decorative output, and returns standardized JSON errors on failure.
+
+```json
+{"error":{"message":"...","code":"COMMAND_FAILED"}}
+```
 
 ## `skillcraft enable`
 
@@ -30,6 +36,8 @@ skillcraft enable --agent opencode --agent codex
 ```
 
 If one supported agent is installed, `skillcraft enable` uses it automatically. If both OpenCode and OpenAI Codex are detected, Skillcraft prompts unless `--agent` is supplied. `--agent` is repeatable and also accepts comma-separated values.
+
+In `--json` mode, interactive selection is disabled. If Skillcraft needs a choice, pass `--agent` explicitly.
 
 Skillcraft installs its git hooks into the repository's active hooks path, so it works with repo-local setups such as Husky's `.husky` directory. If a repository disables hooks entirely with `core.hooksPath=/dev/null`, `skillcraft enable` fails until hooks are re-enabled.
 
@@ -103,7 +111,7 @@ skillcraft progress
 skillcraft progress --refresh
 ```
 
-`--json` is supported and outputs machine-readable status for tracked credentials.
+`--json` outputs machine-readable status for tracked credentials.
 
 ```bash
 skillcraft progress track <credential-id>
@@ -141,6 +149,8 @@ skillcraft skills search [query] [--source <source>] [--limit <n>]
 
 Installed skill evidence is recorded when a supported coding agent actually uses the installed skill.
 
+`skillcraft skills search`, `inspect`, `list`, `add`, `validate`, and `publish` also support `--json`.
+
 ## `skillcraft verify`
 
 Verify local proof references and proof-object integrity.
@@ -166,6 +176,8 @@ skillcraft claim status <issue>
 - `--repo <path...>` includes explicit repository paths.
 - `claim list` shows issues in the credentials repository.
 - `claim status <issue>` shows issue status by number.
+
+All claim subcommands support `--json`.
 
 ## `skillcraft loadout`
 
